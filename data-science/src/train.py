@@ -20,6 +20,13 @@ def parse_args():
     # -------- WRITE YOUR CODE HERE --------
     
     # Step 1: Define arguments for train data, test data, model output, and RandomForest hyperparameters. Specify their types and defaults.  
+    parser.add_argument("--train_data", type=str, help="Path to train data")
+    parser.add_argument("--test_data", type=str, help="Path to test data")
+    parser.add_argument("--criterion", type=str, default="gini", help="The function to measure the quality of a split")
+    parser.add_argument("--max_depth", type=int, default=None,
+        help="The maximum depth of the tree. If None, then nodes are expanded until all leaves contain < min_smaples_split samples."),
+    parser.add_argument("--model_output", type=str, help="Path of output model")
+    args = parser.parse_args()
 
 
     args = parser.parse_args()
@@ -38,6 +45,59 @@ def main(args):
     # Step 6: Predict target values on the test dataset using the trained model, and calculate the mean squared error.  
     # Step 7: Log the MSE metric in MLflow for model evaluation, and save the trained model to the specified output path.  
 
+    # Load the Train and Test Datasets
+    train_df = pd.read_csv(select_first_file(args.train_data))
+    test_df = pd.read_csv(select_first_file(args.test_data))
+
+    # Establish y_train
+    y_train = train_df['price'].values # Target Variable
+
+    # Establish X_train
+    X_train = train_df.drop("price", axis=1).values
+
+    # Establish y_test
+    y_test = test_df["price"].values
+
+    # Establish X_test
+    X_test = test_df.drop("price", axis=1).values
+
+    # Intialize a Random Forest
+    rf_model = RandomForestRegressor(
+        n_estimators=args.n_estimators,
+        max_depth = args.max_depth,
+        random_state=42
+    )
+
+    # Train the Model
+    rf_model = rf_model.fit(
+        X_train,
+        y_train
+    )
+
+    # Log Model Hyperparameters
+    mlflow.log_param("model", "Random Forest Regressor")
+    mlflow.log_param("n_estimators", args.n_estimators)
+    mlflow.log_param("max_depth", args.max_depth)
+
+    # Predict
+    y_pred = rf_model.predict(X_test)
+
+    # Compute and Log the MSE for Testing Data
+    mse = mean_squared_error(
+        y_test,
+        y_pred
+    )
+    print("Mean Squared Error of Random Forest Regressor on test set: {:.2f}".format(mse))
+    mlflow.log_metric("MSE", float(mse))
+
+    # Output the trained model
+    mlflow.sklearn.save_model(
+        sk_model = rf_model,
+        path = args.model_output
+    )
+    
+    # Ending the MLflow experiment run
+    mlflow.end_run()
 
 if __name__ == "__main__":
     
