@@ -25,8 +25,6 @@ jobs:
         cluster_tier: dedicated
         resource_group: ${{ needs.get-config.outputs.resource_group }}
         workspace_name: ${{ needs.get-config.outputs.aml_workspace }} 
-
-        
       secrets:
         creds: ${{secrets.AZURE_CREDENTIALS}} 
         
@@ -38,8 +36,6 @@ jobs:
       workspace_name: ${{ needs.get-config.outputs.aml_workspace }}
       name: machine-failure-data
       data_file: mlops/azureml/train/data.yml
-    
-      
     secrets:
       creds: ${{secrets.AZURE_CREDENTIALS}}
   
@@ -51,7 +47,6 @@ jobs:
         workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
         environment_file:  mlops/azureml/train/train-env.yml
         conda_file: data-science/environment/train-conda.yml
-      
       secrets:
         creds: ${{secrets.AZURE_CREDENTIALS}}
       
@@ -63,6 +58,5 @@ jobs:
         workspace_name: ${{ needs.get-config.outputs.aml_workspace }}     
         parameters-file:  mlops/azureml/train/newpipeline.yml
         job-name: mlops-pipeline
-      
       secrets:
         creds: ${{secrets.AZURE_CREDENTIALS}}
