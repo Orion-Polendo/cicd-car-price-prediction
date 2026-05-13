@@ -7,7 +7,7 @@ description: "Pipeline for data preparation, training, prediction, and model reg
 inputs:
   raw_data:
     type: uri_file
-    path: azureml:used-cars-data@latest
+    path: azureml:used-cars@latest
 
 outputs:
   train_data:
@@ -19,7 +19,7 @@ outputs:
 
 settings:
   default_datastore: azureml:workspaceblobstore
-  default_compute: azureml:cpu-cluster
+  default_compute: azureml:test-cluster
   continue_on_step_failure: false
 
 jobs:
