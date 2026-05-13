@@ -7,7 +7,7 @@ description: "Pipeline for data preparation, training, prediction, and model reg
 inputs:
   raw_data:
     type: uri_file
-    path: azureml:used-cars@latest
+    path: azureml:used-cars-data@latest
 
 outputs:
   train_data:
