@@ -35,13 +35,8 @@ def main(args):
     # Step 3: Register the logged model using its URI and model name, and retrieve its registered version.  
     # Step 4: Write model registration details, including model name and version, into a JSON file in the specified output path.  
 
-    # Argument parser setup for command line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model", type=str, help="Path to the trained model")
-    args = parser.parse_args()
-
     # Load the trained model from the provided path
-    model = mlflow.sklearn.load_model(args.model)
+    model = mlflow.sklearn.load_model(args.model_path)
 
     print("Registering the best trained machine failure prediction model")
 

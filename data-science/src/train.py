@@ -4,6 +4,7 @@
 Trains ML model using training dataset and evaluates using test dataset. Saves trained model.
 """
 
+import os
 import argparse
 from pathlib import Path
 import pandas as pd
@@ -22,10 +23,11 @@ def parse_args():
     # Step 1: Define arguments for train data, test data, model output, and RandomForest hyperparameters. Specify their types and defaults.  
     parser.add_argument("--train_data", type=str, help="Path to train data")
     parser.add_argument("--test_data", type=str, help="Path to test data")
-    parser.add_argument("--criterion", type=str, default="gini", help="The function to measure the quality of a split")
+    parser.add_argument("--criterion", type=str, default="squared_error", help="The function to measure the quality of a split")
     parser.add_argument("--max_depth", type=int, default=None,
         help="The maximum depth of the tree. If None, then nodes are expanded until all leaves contain < min_smaples_split samples."),
     parser.add_argument("--model_output", type=str, help="Path of output model")
+    parser.add_argument("--n_estimators", type=int, default=100, help="Number of trees")
     args = parser.parse_args()
 
 
@@ -46,8 +48,11 @@ def main(args):
     # Step 7: Log the MSE metric in MLflow for model evaluation, and save the trained model to the specified output path.  
 
     # Load the Train and Test Datasets
-    train_df = pd.read_csv(select_first_file(args.train_data))
-    test_df = pd.read_csv(select_first_file(args.test_data))
+    train_file = os.path.join(args.train_data, "data.csv")
+    test_file = os.path.join(args.test_data, "data.csv)")
+
+    train_df = pd.read_csv(train_file)
+    test_df = pd.read_csv(test_file)
 
     # Establish y_train
     y_train = train_df['price'].values # Target Variable
